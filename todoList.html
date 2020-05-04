@@ -4,7 +4,6 @@
 <head>
     <title> Practical JavaScript</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
@@ -23,11 +22,6 @@
       <button onclick="handlers.changeTodo()">Change Todo</button>
       <input id="changeTodoPositionInput" type="number">
       <input id="changeTodoTextInput" type="text">
-    </div>
-
-    <div>
-      <button onclick="handlers.deleteTodo()">Delete</button>
-      <input id="deleteTodoPositionInput" type="number">
     </div>
 
     <div>
@@ -82,7 +76,7 @@
       }
    };
   
-var handlers = {
+  var handlers = {
     addTodo: function() { 
       var addTodoTextInput = document.getElementById('addTodoTextInput');
       todoList.addTodo(addTodoTextInput.value);
@@ -97,19 +91,17 @@ var handlers = {
       changeTodoTextInput.value = '';
       view.displayTodos();
     },
-    deleteTodo: function() {
-      var deleteTodoPositionInput = document.getElementById('deleteTodoPositionInput');
-      todoList.deleteTodo(deleteTodoPositionInput.valueAsNumber);
-      deleteTodoPositionInput.value = '';
+    deleteTodo: function(position) {
+      todoList.deleteTodo(position);
       view.displayTodos();
     },
-   toggleCompleted: function() {
-     var toggleCompletedPositionInput = document.getElementById('toggleCompletedPositionInput');
-     todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
-     toggleCompletedPositionInput.value = '';
-     view.displayTodos();
+    toggleCompleted: function() {
+      var toggleCompletedPositionInput = document.getElementById('toggleCompletedPositionInput');
+      todoList.toggleCompleted(toggleCompletedPositionInput.valueAsNumber);
+      toggleCompletedPositionInput.value = '';
+      view.displayTodos();
    },
-   toggleAll: function() {
+    toggleAll: function() {
       todoList.toggleAll();
       view.displayTodos();
    }
@@ -129,12 +121,36 @@ var view = {
       } else {
         todoTextWithCompletion = '( ) ' + todo.todoText;
       }
-
+      
+      todoLi.id = i;
       todoLi.textContent = todoTextWithCompletion;
+      todoLi.appendChild(this.createDeleteButton());
       todosUl.appendChild(todoLi);
     }
+  },
+    createDeleteButton: function() {
+      var deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.className = 'deleteButton';
+      return deleteButton;
+    },
+    setUpEventListeners: function() {
+      var todosUl = document.querySelector('ul');
+
+      todosUl.addEventListener('click', function(event) {
+      // Get element that was clicked on.
+      var elementClicked = event.target;
+
+      // Checked if element is a delete button.
+      if (elementClicked.className === 'deleteButton') {
+        handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
+      }
+    });
   }
 };
+
+view.setUpEventListeners();
+
 </script>
 
 <script src="script.js"></script>
